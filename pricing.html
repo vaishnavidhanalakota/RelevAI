@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - RelevAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .payment-methods {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .payment-option {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 120px;
+            text-align: center;
+        }
+        .payment-option:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .payment-option img {
+            width: 40px;
+            height: 25px;
+            margin-bottom: 10px;
+        }
+        #payNow {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        #payNow:hover {
+            background-color: #1d3576;
+        }
+        .payment-app-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .payment-app-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .payment-app-content h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .payment-app-content p {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #e0e0e0;
+        }
+        .payment-app-content .amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #fff;
+            margin: 20px 0;
+        }
+        .payment-app-content .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .payment-app-content .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .payment-app-content button {
+            background-color: #fff;
+            color: #667eea;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .payment-app-content button:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .success-modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .success-content {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        .success-content i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .success-content h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .success-content p {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #e0e0e0;
+        }
+        .success-content button {
+            background-color: #fff;
+            color: #10b981;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .success-content button:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
+        }
+        
+        /* Failure Modal */
+        .failure-modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .failure-content {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        .failure-content i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .failure-content h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .failure-content p {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #e0e0e0;
+        }
+        .failure-content button {
+            background-color: #fff;
+            color: #ef4444;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .failure-content button:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
+        }
+        
+        /* Processing Modal */
+        .processing-modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .processing-content {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        .processing-content .spinner {
+            width: 60px;
+            height: 60px;
+            margin: 20px auto;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .processing-content h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .processing-content p {
+            font-size: 16px;
+            margin: 15px 0;
+            color: #e0e0e0;
+        }
+        
+        /* Contact Sales Modal */
+        #contactModal {
+            display: none;
+            position: fixed;
+            z-index: 1003;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        #contactModal .modal-content {
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            margin: 10% auto;
+        }
+        #contactForm input, #contactForm textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        #contactForm button {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        #contactForm button:hover {
+            background-color: #1d3576;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased">
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Choose the plan that fits your needs — whether you're a student, recruiter, or enterprise team.
+                </p>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <!-- Free Plan -->
+                <div class="bg-white rounded-lg shadow-md p-8 border border-gray-200">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Free</h3>
+                        <div class="flex items-baseline justify-center mb-2">
+                            <span class="text-5xl font-bold text-gray-900">$0</span>
+                            <span class="text-gray-500 text-lg ml-1">/month</span>
+                        </div>
+                        <p class="text-gray-500 text-sm">Perfect for students and job seekers</p>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>5 resume analyses per month</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Basic job matching</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>AI-powered feedback</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Advanced analytics</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Priority support</span>
+                        </li>
+                    </ul>
+                    
+                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300">
+                        Choose Plan
+                    </button>
+                </div>
+
+                <!-- Pro Plan (Updated) -->
+                <div class="bg-white rounded-lg shadow-md p-8 border-2 border-indigo-600 relative">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-600 text-white">Most Popular</span>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Pro</h3>
+                        <div class="flex items-baseline justify-center mb-2">
+                            <span class="text-5xl font-bold text-gray-900">$5</span>
+                            <span class="text-gray-500 text-lg ml-1">/month</span>
+                        </div>
+                        <p class="text-gray-500 text-sm">Ideal for active job seekers</p>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Unlimited resume analyses</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Advanced job matching</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Priority AI feedback</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Advanced analytics dashboard</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Dedicated account manager</span>
+                        </li>
+                    </ul>
+                    
+                    <button id="proPlanBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300">
+                        Choose Plan
+                    </button>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="bg-white rounded-lg shadow-md p-8 border border-gray-200">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Enterprise</h3>
+                        <div class="flex items-baseline justify-center mb-2">
+                            <span class="text-5xl font-bold text-gray-900">Custom</span>
+                        </div>
+                        <p class="text-gray-500 text-sm">For universities and recruiting teams</p>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Unlimited analyses for teams</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Custom job matching engine</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>White-label dashboard</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Advanced analytics & reporting</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Dedicated account manager</span>
+                        </li>
+                    </ul>
+                    
+                    <button id="contactSalesBtn" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300">
+                        Contact Sales
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Methods Section -->
+            <div class="mt-16 bg-white rounded-lg shadow-md p-8 border border-gray-200">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Payment Options</h3>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <!-- Credit Cards -->
+                    <div class="flex flex-col items-center group">
+                        <i class="fab fa-cc-visa text-3xl text-blue-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">Visa</span>
+                    </div>
+                    <div class="flex flex-col items-center group">
+                        <i class="fab fa-cc-mastercard text-3xl text-red-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">Mastercard</span>
+                    </div>
+                    <div class="flex flex-col items-center group">
+                        <i class="fab fa-cc-amex text-3xl text-blue-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">American Express</span>
+                    </div>
+                    <div class="flex flex-col items-center group">
+                        <i class="fab fa-cc-discover text-3xl text-orange-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">Discover</span>
+                    </div>
+                    <div class="flex flex-col items-center group">
+                        <i class="fab fa-paypal text-3xl text-blue-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">PayPal</span>
+                    </div>
+                    
+                    <!-- UPI Payment Options -->
+                    <div class="flex flex-col items-center group">
+                        <i class="fab fa-google-pay text-3xl text-blue-600 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">Google Pay</span>
+                    </div>
+                    <div class="flex flex-col items-center group">
+                        <i class="fab fa-paytm text-3xl text-orange-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">Paytm</span>
+                    </div>
+                    <div class="flex flex-col items-center group">
+                        <i class="fab fa-phone-square-alt text-3xl text-green-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">PhonePe</span>
+                    </div>
+                    
+                    <!-- Other Options -->
+                    <div class="flex flex-col items-center group">
+                        <i class="fas fa-credit-card text-3xl text-gray-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">Bank Transfer</span>
+                    </div>
+                    <div class="flex flex-col items-center group">
+                        <i class="fas fa-money-bill-wave text-3xl text-green-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-gray-700 text-sm">Cash</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Options Modal -->
+    <div id="paymentOptionsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Complete Your Payment</h2>
+            <p>You're purchasing the Pro plan for $5/month</p>
+            
+            <div class="payment-methods">
+                <div class="payment-option" data-method="credit-card">
+                    <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" alt="Visa" />
+                    <p>Credit Card</p>
+                </div>
+                <div class="payment-option" data-method="google-pay">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046778.png" alt="Google Pay" />
+                    <p>Google Pay</p>
+                </div>
+                <div class="payment-option" data-method="phonepe">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046780.png" alt="PhonePe" />
+                    <p>PhonePe</p>
+                </div>
+                <div class="payment-option" data-method="paytm">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046779.png" alt="Paytm" />
+                    <p>Paytm</p>
+                </div>
+            </div>
+            
+            <button id="payNow">Pay Now</button>
+        </div>
+    </div>
+
+    <!-- Google Pay Modal -->
+    <div id="googlePayModal" class="payment-app-modal">
+        <div class="payment-app-content">
+            <h3>Google Pay</h3>
+            <p>Scan the QR code to pay</p>
+            <div class="amount">$5.00</div>
+            <div class="qr-code">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=yourupi@upi&pn=RelevAI&am=5.00&cu=USD&tn=Pro%20Plan%20Payment" alt="Google Pay QR Code">
+            </div>
+            <p>Open Google Pay app to complete payment</p>
+            <button onclick="completePayment('Google Pay')">Complete Payment</button>
+        </div>
+    </div>
+
+    <!-- PhonePe Modal -->
+    <div id="phonePeModal" class="payment-app-modal">
+        <div class="payment-app-content">
+            <h3>PhonePe</h3>
+            <p>Scan the QR code to pay</p>
+            <div class="amount">$5.00</div>
+            <div class="qr-code">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=yourupi@upi&pn=RelevAI&am=5.00&cu=USD&tn=Pro%20Plan%20Payment" alt="PhonePe QR Code">
+            </div>
+            <p>Open PhonePe app to complete payment</p>
+            <button onclick="completePayment('PhonePe')">Complete Payment</button>
+        </div>
+    </div>
+
+    <!-- Paytm Modal -->
+    <div id="paytmModal" class="payment-app-modal">
+        <div class="payment-app-content">
+            <h3>Paytm</h3>
+            <p>Scan the QR code to pay</p>
+            <div class="amount">$5.00</div>
+            <div class="qr-code">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=yourupi@upi&pn=RelevAI&am=5.00&cu=USD&tn=Pro%20Plan%20Payment" alt="Paytm QR Code">
+            </div>
+            <p>Open Paytm app to complete payment</p>
+            <button onclick="completePayment('Paytm')">Complete Payment</button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal">
+        <div class="success-content">
+            <i class="fas fa-check-circle"></i>
+            <h3>Payment Successful!</h3>
+            <p>Thank you for purchasing the Pro plan.</p>
+            <p>You now have access to all premium features.</p>
+            <button onclick="closeSuccessModal()">Continue to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Failure Modal -->
+    <div id="failureModal" class="failure-modal">
+        <div class="failure-content">
+            <i class="fas fa-times-circle"></i>
+            <h3>Payment Failed</h3>
+            <p id="failureMessage">There was an error processing your payment. Please try again.</p>
+            <button onclick="closeFailureModal()">Try Again</button>
+        </div>
+    </div>
+
+    <!-- Processing Modal -->
+    <div id="processingModal" class="processing-modal">
+        <div class="processing-content">
+            <div class="spinner"></div>
+            <h3>Processing Payment</h3>
+            <p>Please wait while we process your payment...</p>
+        </div>
+    </div>
+
+    <!-- Contact Sales Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Contact Sales</h2>
+            <p>Fill out the form below and our enterprise sales team will contact you within 24 hours.</p>
+            
+            <form id="contactForm">
+                <input type="text" name="name" placeholder="Your Name" required />
+                <input type="email" name="email" placeholder="Your Email" required />
+                <input type="text" name="company" placeholder="Company/Organization" />
+                <textarea name="message" placeholder="Tell us about your needs, team size, and any specific requirements..." rows="4"></textarea>
+                
+                <button type="submit">Send Message</button>
+            </form>
+            
+            <p class="mt-4 text-sm text-gray-500">
+                Or email us directly: <a href="mailto:sales@relevai.com" class="text-blue-500">sales@relevai.com</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Get elements
+        const proPlanBtn = document.getElementById('proPlanBtn');
+        const contactSalesBtn = document.getElementById('contactSalesBtn');
+        const paymentOptionsModal = document.getElementById('paymentOptionsModal');
+        const googlePayModal = document.getElementById('googlePayModal');
+        const phonePeModal = document.getElementById('phonePeModal');
+        const paytmModal = document.getElementById('paytmModal');
+        const successModal = document.getElementById('successModal');
+        const failureModal = document.getElementById('failureModal');
+        const processingModal = document.getElementById('processingModal');
+        const contactModal = document.getElementById('contactModal');
+        const closeBtns = document.querySelectorAll('.close');
+        const payNowBtn = document.getElementById('payNow');
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const contactForm = document.getElementById('contactForm');
+        const failureMessage = document.getElementById('failureMessage');
+
+        // Show payment options modal
+        proPlanBtn.addEventListener('click', function() {
+            paymentOptionsModal.style.display = 'block';
+        });
+
+        // Show contact sales modal
+        contactSalesBtn.addEventListener('click', function() {
+            contactModal.style.display = 'block';
+        });
+
+        // Close modals
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                paymentOptionsModal.style.display = 'none';
+                googlePayModal.style.display = 'none';
+                phonePeModal.style.display = 'none';
+                paytmModal.style.display = 'none';
+                successModal.style.display = 'none';
+                failureModal.style.display = 'none';
+                processingModal.style.display = 'none';
+                contactModal.style.display = 'none';
+            });
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === paymentOptionsModal) {
+                paymentOptionsModal.style.display = 'none';
+            }
+            if (event.target === googlePayModal) {
+                googlePayModal.style.display = 'none';
+            }
+            if (event.target === phonePeModal) {
+                phonePeModal.style.display = 'none';
+            }
+            if (event.target === paytmModal) {
+                paytmModal.style.display = 'none';
+            }
+            if (event.target === successModal) {
+                successModal.style.display = 'none';
+            }
+            if (event.target === failureModal) {
+                failureModal.style.display = 'none';
+            }
+            if (event.target === processingModal) {
+                processingModal.style.display = 'none';
+            }
+            if (event.target === contactModal) {
+                contactModal.style.display = 'none';
+            }
+        });
+
+        // Handle payment method selection
+        let selectedPaymentMethod = null;
+        
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                paymentOptions.forEach(opt => opt.classList.remove('ring-2', 'ring-indigo-500'));
+                
+                // Add selected class to clicked option
+                this.classList.add('ring-2', 'ring-indigo-500');
+                
+                // Store selected method
+                selectedPaymentMethod = this.getAttribute('data-method');
+            });
+        });
+
+        // Handle Pay Now button
+        payNowBtn.addEventListener('click', function() {
+            if (!selectedPaymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            // Show processing modal
+            processingModal.style.display = 'block';
+            
+            // Simulate payment processing with random success/failure
+            setTimeout(() => {
+                processingModal.style.display = 'none';
+                
+                // Simulate network issues or payment failures (30% chance of failure)
+                const shouldFail = Math.random() < 0.3;
+                
+                if (shouldFail) {
+                    // Random failure reasons
+                    const failureReasons = [
+                        "Network connection error. Please check your internet connection and try again.",
+                        "Payment gateway timeout. Please try again in a few minutes.",
+                        "Insufficient funds in your account.",
+                        "Card declined by your bank. Please contact your bank or try another payment method.",
+                        "Security verification failed. Please try again or contact support.",
+                        "System error. Our payment system is currently experiencing issues. Please try again later."
+                    ];
+                    
+                    const randomReason = failureReasons[Math.floor(Math.random() * failureReasons.length)];
+                    failureMessage.textContent = randomReason;
+                    failureModal.style.display = 'block';
+                } else {
+                    // Hide payment options modal
+                    paymentOptionsModal.style.display = 'none';
+                    
+                    // Show appropriate payment app modal for UPI payments
+                    if (selectedPaymentMethod === 'google-pay') {
+                        googlePayModal.style.display = 'block';
+                    } else if (selectedPaymentMethod === 'phonepe') {
+                        phonePeModal.style.display = 'block';
+                    } else if (selectedPaymentMethod === 'paytm') {
+                        paytmModal.style.display = 'block';
+                    } else {
+                        // For credit card, show success immediately
+                        showSuccessModal();
+                    }
+                }
+            }, 2000); // Simulate 2 seconds of processing time
+        });
+
+        // Complete payment function
+        function completePayment(method) {
+            // Show processing modal
+            processingModal.style.display = 'block';
+            
+            // Simulate payment processing with random success/failure
+            setTimeout(() => {
+                processingModal.style.display = 'none';
+                
+                // Simulate network issues or payment failures (20% chance of failure for UPI)
+                const shouldFail = Math.random() < 0.2;
+                
+                if (shouldFail) {
+                    // Random failure reasons for UPI payments
+                    const failureReasons = [
+                        "Unable to connect to " + method + ". Please check your app and try again.",
+                        method + " transaction failed. Please ensure you have sufficient balance.",
+                        "Security verification failed with " + method + ". Please try again.",
+                        "Network error with " + method + ". Please check your internet connection.",
+                        "Transaction timeout with " + method + ". Please try again."
+                    ];
+                    
+                    const randomReason = failureReasons[Math.floor(Math.random() * failureReasons.length)];
+                    failureMessage.textContent = randomReason;
+                    failureModal.style.display = 'block';
+                } else {
+                    // Hide all payment app modals
+                    googlePayModal.style.display = 'none';
+                    phonePeModal.style.display = 'none';
+                    paytmModal.style.display = 'none';
+                    
+                    // Show success modal
+                    showSuccessModal();
+                }
+            }, 2500); // Simulate 2.5 seconds of processing time
+        }
+
+        // Show success modal
+        function showSuccessModal() {
+            successModal.style.display = 'block';
+        }
+
+        // Close success modal
+        function closeSuccessModal() {
+            successModal.style.display = 'none';
+            // In a real app, you would redirect to dashboard here
+            alert('Redirecting to dashboard...');
+        }
+
+        // Close failure modal
+        function closeFailureModal() {
+            failureModal.style.display = 'none';
+            // Return to payment options or appropriate modal
+            if (selectedPaymentMethod === 'google-pay' && googlePayModal.style.display === 'none') {
+                googlePayModal.style.display = 'block';
+            } else if (selectedPaymentMethod === 'phonepe' && phonePeModal.style.display === 'none') {
+                phonePeModal.style.display = 'block';
+            } else if (selectedPaymentMethod === 'paytm' && paytmModal.style.display === 'none') {
+                paytmModal.style.display = 'block';
+            } else {
+                paymentOptionsModal.style.display = 'block';
+            }
+        }
+
+        // Handle contact form submission
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(contactForm);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            
+            if (!name || !email) {
+                alert('Please fill in your name and email');
+                return;
+            }
+            
+            
+            // In a real app, you would send this data to your backend
+            alert(`Thank you ${name}! Our sales team will contact you at ${email} shortly.`);
+            
+            // Reset form and close modal
+            contactForm.reset();
+            contactModal.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

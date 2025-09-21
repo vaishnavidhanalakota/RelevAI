@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Features - RelevAI</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Feather Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    .feature-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    /* Tooltip */
+    .tooltip {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <a href="index.html" class="text-indigo-600 font-bold text-xl flex items-center">
+            <i data-feather="activity" class="h-6 w-6 mr-2"></i>
+            RelevAI
+          </a>
+        </div>
+        <div class="flex items-center space-x-8">
+          <a href="index.html" class="text-gray-600 hover:text-gray-900">Home</a>
+          <a href="#" class="text-indigo-600 border-b-2 border-indigo-600">Features</a>
+          <a href="dashboard.html" class="text-gray-600 hover:text-gray-900">Dashboard</a>
+          <a href="#" class="text-gray-600 hover:text-gray-900">Pricing</a>
+          <a href="#" class="text-gray-600 hover:text-gray-900">Login</a>
+          <a href="#" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main class="container mx-auto px-4 py-16">
+    <div class="text-center mb-16">
+      <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+        Powerful Features for Smarter Hiring
+      </h1>
+      <p class="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+        RelevAI uses AI to match resumes with job descriptions, remove bias, and give actionable feedback — saving recruiters time and helping students land more interviews.
+      </p>
+      <div class="mt-8">
+        <a href="dashboard.html" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Try Free Demo →
+        </a>
+      </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        
+        <!-- Feature 1 -->
+        <div class="bg-white p-6 rounded-lg shadow feature-card"
+             onclick="showTooltip('AI Relevance Scoring', 'Upload a job description and resume — RelevAI scores relevance from 0–100% using semantic matching and keyword analysis.')">
+          <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-100 text-indigo-600 mb-4">
+            <i data-feather="target" class="h-6 w-6"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900">AI Relevance Scoring</h3>
+          <p class="mt-2 text-gray-600">
+            Upload a job description and resume — RelevAI scores relevance from 0–100% using semantic matching and keyword analysis.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="bg-white p-6 rounded-lg shadow feature-card"
+             onclick="showTooltip('Instant Feedback', 'Get personalized suggestions to improve your resume — missing skills, weak phrasing, or formatting tips powered by AI.')">
+          <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-100 text-indigo-600 mb-4">
+            <i data-feather="zap" class="h-6 w-6"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900">Instant Feedback</h3>
+          <p class="mt-2 text-gray-600">
+            Get personalized suggestions to improve your resume — missing skills, weak phrasing, or formatting tips powered by AI.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bg-white p-6 rounded-lg shadow feature-card"
+             onclick="showTooltip('Bias-Free Matching', 'Our system ignores names, schools, and demographics — focusing only on skills and experience for fair, consistent evaluation.')">
+          <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-100 text-indigo-600 mb-4">
+            <i data-feather="users" class="h-6 w-6"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900">Bias-Free Matching</h3>
+          <p class="mt-2 text-gray-600">
+            Our system ignores names, schools, and demographics — focusing only on skills and experience for fair, consistent evaluation.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="bg-white p-6 rounded-lg shadow feature-card"
+             onclick="showTooltip('Smart Search & Filter', 'Recruiters can filter candidates by score, missing skills, or experience — shortlisting the best matches in seconds.')">
+          <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-100 text-indigo-600 mb-4">
+            <i data-feather="search" class="h-6 w-6"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900">Smart Search & Filter</h3>
+          <p class="mt-2 text-gray-600">
+            Recruiters can filter candidates by score, missing skills, or experience — shortlisting the best matches in seconds.
+          </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="bg-white p-6 rounded-lg shadow feature-card"
+             onclick="showTooltip('Analytics Dashboard', 'Track resume quality over time, see skill gaps across applicants, and measure hiring funnel performance.')">
+          <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-100 text-indigo-600 mb-4">
+            <i data-feather="bar-chart-2" class="h-6 w-6"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900">Analytics Dashboard</h3>
+          <p class="mt-2 text-gray-600">
+            Track resume quality over time, see skill gaps across applicants, and measure hiring funnel performance.
+          </p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="bg-white p-6 rounded-lg shadow feature-card"
+             onclick="showTooltip('Bulk Upload & Export', 'Upload dozens of resumes at once. Export shortlists to CSV with scores and feedback for easy sharing.')">
+          <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-100 text-indigo-600 mb-4">
+            <i data-feather="upload" class="h-6 w-6"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900">Bulk Upload & Export</h3>
+          <p class="mt-2 text-gray-600">
+            Upload dozens of resumes at once. Export shortlists to CSV with scores and feedback for easy sharing.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="mt-20 bg-white rounded-lg shadow p-8">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Trusted by Students & Recruiters</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <p class="text-gray-600 italic">“RelevAI helped me identify missing AWS skills — I added a project and got 3x more callbacks!”</p>
+          <p class="mt-4 font-medium text-gray-900">— Priya S., Software Engineer</p>
+        </div>
+        <div class="text-center">
+          <p class="text-gray-600 italic">“Cut our resume screening time by 80%. The AI suggestions are surprisingly accurate.”</p>
+          <p class="mt-4 font-medium text-gray-900">— Raj M., Tech Recruiter</p>
+        </div>
+        <div class="text-center">
+          <p class="text-gray-600 italic">“The dashboard is intuitive. I can filter by ‘missing React’ and find candidates to coach.”</p>
+          <p class="mt-4 font-medium text-gray-900">— Dr. Anil K., Career Advisor</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <h2 class="text-3xl font-bold text-gray-900">Ready to Transform Your Hiring?</h2>
+      <p class="mt-4 text-xl text-gray-600">Start with our free demo — no credit card required.</p>
+      <div class="mt-6">
+        <a href="dashboard.html" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Launch Free Demo
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="md:flex md:items-center md:justify-between">
+        <div class="flex justify-center md:justify-start">
+          <a href="index.html" class="text-xl font-bold flex items-center">
+            <i data-feather="activity" class="h-6 w-6 mr-2"></i>
+            RelevAI
+          </a>
+        </div>
+        <div class="mt-8 md:mt-0">
+          <p class="text-center md:text-right text-gray-400">
+            © 2025 RelevAI. Built for fairness, speed, and opportunity.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Tooltip Modal -->
+  <div id="tooltipOverlay" class="overlay hidden" onclick="closeTooltip()"></div>
+  <div id="tooltipModal" class="tooltip hidden">
+    <h3 id="tooltipTitle" class="text-2xl font-bold text-gray-900 mb-4"></h3>
+    <p id="tooltipContent" class="text-gray-600 mb-6"></p>
+    <button onclick="closeTooltip()" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+      Close
+    </button>
+  </div>
+
+  <!-- Initialize Feather Icons -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      feather.replace();
+    });
+
+    // Show Tooltip
+    function showTooltip(title, content) {
+      document.getElementById('tooltipTitle').textContent = title;
+      document.getElementById('tooltipContent').textContent = content;
+      document.getElementById('tooltipOverlay').classList.remove('hidden');
+      document.getElementById('tooltipModal').classList.remove('hidden');
+    }
+
+    // Close Tooltip
+    function closeTooltip() {
+      document.getElementById('tooltipOverlay').classList.add('hidden');
+      document.getElementById('tooltipModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

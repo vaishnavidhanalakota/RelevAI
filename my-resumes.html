@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Resumes - RelevAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white w-64 border-r border-gray-200 flex-shrink-0">
+            <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200">
+                <div class="flex items-center">
+                    <i data-feather="activity" class="h-8 w-8 text-indigo-600"></i>
+                    <span class="ml-2 text-xl font-bold text-gray-900">RelevAI</span>
+                </div>
+            </div>
+            <nav class="px-4 py-6">
+                <div class="space-y-1">
+                    <a href="dashboard.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="home" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                        Dashboard
+                    </a>
+                    <a href="#" class="bg-indigo-50 text-indigo-700 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="file-text" class="text-indigo-500 mr-3 h-5 w-5"></i>
+                        My Resumes
+                    </a>
+                    <a href="job-matches.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="briefcase" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                        Job Matches
+                    </a>
+                    <a href="analytics.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="bar-chart-2" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                        Analytics
+                    </a>
+                    <a href="settings.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="settings" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                        Settings
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <div class="bg-white shadow-sm border-b border-gray-200">
+                <div class="flex justify-between items-center h-16 px-4">
+                    <h1 class="text-lg font-medium text-gray-900">My Resumes</h1>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <h1 class="text-2xl font-bold mb-6">My Resumes</h1>
+                <p class="mb-6 text-gray-700">Manage and organize your resume collection</p>
+
+                <!-- Resume List -->
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Main Resume</h2>
+                        <p class="text-gray-600">Primary</p>
+                        <p class="text-gray-500 mt-1">Updated 2 days ago</p>
+                        <div class="mt-3 space-x-2">
+                            <button class="px-3 py-1 text-sm bg-blue-500 text-white rounded">Edit</button>
+                            <button class="px-3 py-1 text-sm bg-gray-500 text-white rounded">Download</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Tech Resume</h2>
+                        <p class="text-gray-600">Technical</p>
+                        <p class="text-gray-500 mt-1">Updated 1 week ago</p>
+                        <div class="mt-3 space-x-2">
+                            <button class="px-3 py-1 text-sm bg-blue-500 text-white rounded">Edit</button>
+                            <button class="px-3 py-1 text-sm bg-gray-500 text-white rounded">Download</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Creative Resume</h2>
+                        <p class="text-gray-600">Design</p>
+                        <p class="text-gray-500 mt-1">Updated 3 weeks ago</p>
+                        <div class="mt-3 space-x-2">
+                            <button class="px-3 py-1 text-sm bg-blue-500 text-white rounded">Edit</button>
+                            <button class="px-3 py-1 text-sm bg-gray-500 text-white rounded">Download</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Upload New Resume</h2>
+                        <p class="text-gray-600 mb-2">Drag & drop your resume file here or click to browse</p>
+                        <button class="px-3 py-1 text-sm bg-gray-500 text-white rounded">Browse Files</button>
+                        <p class="text-sm text-gray-500 mt-2">Supported formats: PDF, DOC, DOCX (Max 5MB)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

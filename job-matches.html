@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Matches - RelevAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white w-64 border-r border-gray-200 flex-shrink-0">
+            <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200">
+                <div class="flex items-center">
+                    <i data-feather="activity" class="h-8 w-8 text-indigo-600"></i>
+                    <span class="ml-2 text-xl font-bold text-gray-900">RelevAI</span>
+                </div>
+            </div>
+            <nav class="px-4 py-6">
+                <div class="space-y-1">
+                    <a href="dashboard.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="home" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                        Dashboard
+                    </a>
+                    <a href="my-resume.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="file-text" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                        My Resumes
+                    </a>
+                    <a href="#" class="bg-indigo-50 text-indigo-700 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="briefcase" class="text-indigo-500 mr-3 h-5 w-5"></i>
+                        Job Matches
+                    </a>
+                    <a href="analytics.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="bar-chart-2" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                        Analytics
+                    </a>
+                    <a href="settings.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                        <i data-feather="settings" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                        Settings
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <div class="bg-white shadow-sm border-b border-gray-200">
+                <div class="flex justify-between items-center h-16 px-4">
+                    <h1 class="text-lg font-medium text-gray-900">Job Matches</h1>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <h1 class="text-2xl font-bold mb-6">Recommended Job Matches</h1>
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <div class="bg-white p-5 rounded-lg shadow">
+                        <h2 class="font-bold text-lg">Senior Software Engineer</h2>
+                        <p class="text-gray-600">TechCorp Inc.</p>
+                        <p class="text-gray-500 mt-1">San Francisco, CA (Remote)</p>
+                        <p class="text-gray-500">$120,000 - $150,000 / year</p>
+                        <div class="mt-4">
+                            <span class="text-green-600 font-medium">92% Match</span>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 92%;"></div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded">Apply Now</button>
+                            <button class="px-4 py-2 border border-gray-300 rounded">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-lg shadow">
+                        <h2 class="font-bold text-lg">Frontend Developer</h2>
+                        <p class="text-gray-600">WebSolutions LLC</p>
+                        <p class="text-gray-500 mt-1">New York, NY (Hybrid)</p>
+                        <p class="text-gray-500">$90,000 - $110,000 / year</p>
+                        <div class="mt-4">
+                            <span class="text-green-600 font-medium">85% Match</span>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded">Apply Now</button>
+                            <button class="px-4 py-2 border border-gray-300 rounded">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-lg shadow">
+                        <h2 class="font-bold text-lg">Product Manager</h2>
+                        <p class="text-gray-600">InnovateTech</p>
+                        <p class="text-gray-500 mt-1">Boston, MA (On-site)</p>
+                        <p class="text-gray-500">$110,000 - $130,000 / year</p>
+                        <div class="mt-4">
+                            <span class="text-yellow-600 font-medium">78% Match</span>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-yellow-600 h-2 rounded-full" style="width: 78%;"></div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded">Apply Now</button>
+                            <button class="px-4 py-2 border border-gray-300 rounded">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

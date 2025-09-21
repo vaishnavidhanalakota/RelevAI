@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - RelevAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+  <style>
+    .sidebar {
+      transition: all 0.3s;
+    }
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background-color: #e2e8f0;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+    .skill-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      line-height: 1rem;
+      font-weight: 500;
+    }
+    .missing-skill {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    .present-skill {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .close {
+      float: right;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4ade80;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Notification Dropdown */
+    .notification-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 320px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      z-index: 50;
+      display: none;
+    }
+    .notification-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+    .notification-title {
+      font-weight: 600;
+      color: #111827;
+    }
+    .notification-time {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    /* User Menu Dropdown */
+    .user-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 192px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem 0;
+      z-index: 50;
+      display: none;
+    }
+    .user-menu a {
+      display: block;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      color: #374151;
+      text-decoration: none;
+    }
+    .user-menu a:hover {
+      background-color: #f3f4f6;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Resume uploaded successfully!</div>
+
+  <!-- Help Center Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('helpModal')">&times;</span>
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Help Center</h3>
+      <div class="space-y-4">
+        <div class="faq-item">
+          <h4 class="font-medium">How do I upload a resume?</h4>
+          <p class="text-sm text-gray-600 mt-1">Click “Upload New Resume” in the Resume Analysis section. We accept PDF and DOCX files.</p>
+        </div>
+        <div class="faq-item">
+          <h4 class="font-medium">What is the relevance score?</h4>
+          <p class="text-sm text-gray-600 mt-1">It’s a 0–100% match between your resume and the job description, based on skills, experience, and keywords.</p>
+        </div>
+        <div class="faq-item">
+          <h4 class="font-medium">How are suggestions generated?</h4>
+          <p class="text-sm text-gray-600 mt-1">Our AI analyzes missing skills and suggests improvements to better match your target jobs.</p>
+        </div>
+        <div class="faq-item">
+          <h4 class="font-medium">Why is my score low?</h4>
+          <p class="text-sm text-gray-600 mt-1">You may be missing key skills or keywords from the job description. Check the “Missing Skills” section and use “Improve Resume” for tips.</p>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          onclick="closeModal('helpModal')">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Support Modal -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('contactModal')">&times;</span>
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Support</h3>
+      <form id="supportForm" onsubmit="submitSupportForm(event)">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Your Email</label>
+          <input type="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Message</label>
+          <textarea name="message" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+        </div>
+        <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <div class="sidebar bg-white w-64 border-r border-gray-200 flex-shrink-0">
+      <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200">
+        <div class="flex items-center">
+          <i data-feather="activity" class="h-8 w-8 text-indigo-600"></i>
+          <span class="ml-2 text-xl font-bold text-gray-900">RelevAI</span>
+        </div>
+      </div>
+      <div class="overflow-y-auto h-full">
+        <nav class="px-4 py-6">
+          <div class="space-y-1">
+            <a href="#" class="bg-indigo-50 text-indigo-700 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+              <i data-feather="home" class="text-indigo-500 mr-3 h-5 w-5"></i>
+              Dashboard
+            </a>
+            <a href="my-resume.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+              <i data-feather="file-text" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+              My Resumes
+            </a>
+            <a href="job-matches.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+              <i data-feather="briefcase" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+              Job Matches
+            </a>
+            <a href="analytics.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+              <i data-feather="bar-chart-2" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+              Analytics
+            </a>
+            <a href="settings.html" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+              <i data-feather="settings" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+              Settings
+            </a>
+          </div>
+          <div class="mt-8">
+            <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Resources</h3>
+            <div class="mt-1 space-y-1">
+              <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md" onclick="showModal('helpModal')">
+                <i data-feather="help-circle" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                Help Center
+              </a>
+              <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md" onclick="showModal('contactModal')">
+                <i data-feather="mail" class="text-gray-400 group-hover:text-gray-500 mr-3 h-5 w-5"></i>
+                Contact Support
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="dashboardContent" class="flex-1 overflow-auto">
+      <!-- Top Navigation -->
+      <div class="bg-white shadow-sm border-b border-gray-200">
+        <div class="flex justify-between items-center h-16 px-4">
+          <div class="flex items-center">
+            <button id="sidebar-toggle" class="mr-4 text-gray-500 focus:outline-none lg:hidden">
+              <i data-feather="menu" class="h-6 w-6"></i>
+            </button>
+            <h1 class="text-lg font-medium text-gray-900">Dashboard</h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <!-- Notification Bell -->
+            <div class="relative" id="notification-container">
+              <button id="notification-bell" class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
+                <i data-feather="bell" class="h-6 w-6"></i>
+              </button>
+              <!-- Notification Dropdown -->
+              <div id="notification-dropdown" class="notification-dropdown">
+                <h4 class="text-sm font-semibold text-gray-700 mb-2">Recent Notifications</h4>
+                <div class="notification-item">
+                  <div class="notification-title">New job match found!</div>
+                  <div class="notification-time">2 minutes ago</div>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-title">Resume analysis complete</div>
+                  <div class="notification-time">1 hour ago</div>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-title">Profile updated successfully</div>
+                  <div class="notification-time">3 hours ago</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="relative" id="user-profile-container">
+              <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none">
+                <img class="h-8 w-8 rounded-full" src="https://randomuser.me/api/portraits/women/44.jpg" alt="John Doe" />
+                <span class="text-sm font-medium text-gray-700">John Doe</span>
+                <i data-feather="chevron-down" class="h-4 w-4 text-gray-400"></i>
+              </button>
+              <!-- User Menu Dropdown -->
+              <div id="user-menu" class="user-menu">
+                <a href="#">Your Profile</a>
+                <a href="#">Settings</a>
+                <a href="login.html">Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="p-6">
+        <!-- Welcome Banner -->
+        <div class="bg-indigo-50 rounded-lg p-6 mb-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <i data-feather="star" class="h-10 w-10 text-indigo-600"></i>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-indigo-800">Welcome back, John!</h3>
+              <p class="mt-1 text-sm text-indigo-700">You have 3 new job matches and 2 resume improvement suggestions.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resume Analysis Section -->
+        <div class="mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">Your Resume Analysis</h2>
+            <form id="resumeUploadForm">
+              <input type="file" id="resumeFile" name="resume" accept=".pdf,.docx" class="hidden" />
+              <label for="resumeFile" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">
+                <i data-feather="upload" class="mr-2 h-4 w-4"></i>
+                Upload New Resume
+              </label>
+            </form>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Software Engineer Resume -->
+            <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+              <div class="p-6">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium text-gray-900">Software Engineer Resume</h3>
+                  <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">87% Match</span>
+                </div>
+                <div class="mt-4">
+                  <div class="progress-bar">
+                    <div class="progress-fill bg-green-500" style="width: 87%"></div>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <h4 class="text-sm font-medium text-gray-500">Missing Skills</h4>
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    <span class="missing-skill skill-chip">React.js</span>
+                    <span class="missing-skill skill-chip">AWS</span>
+                    <span class="present-skill skill-chip">JavaScript</span>
+                    <span class="present-skill skill-chip">Python</span>
+                    <span class="present-skill skill-chip">SQL</span>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <button class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="showModal('improveModal')">
+                    <i data-feather="edit" class="mr-2 h-4 w-4"></i>
+                    Improve Resume
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product Manager Resume -->
+            <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+              <div class="p-6">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium text-gray-900">Product Manager Resume</h3>
+                  <span class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">65% Match</span>
+                </div>
+                <div class="mt-4">
+                  <div class="progress-bar">
+                    <div class="progress-fill bg-yellow-500" style="width: 65%"></div>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <h4 class="text-sm font-medium text-gray-500">Missing Skills</h4>
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    <span class="missing-skill skill-chip">Agile</span>
+                    <span class="missing-skill skill-chip">JIRA</span>
+                    <span class="present-skill skill-chip">Product Strategy</span>
+                    <span class="present-skill skill-chip">Market Research</span>
+                    <span class="missing-skill skill-chip">SQL</span>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <button class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="showModal('improveModal')">
+                    <i data-feather="edit" class="mr-2 h-4 w-4"></i>
+                    Improve Resume
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add New Resume -->
+            <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+              <div class="p-6 h-full flex flex-col items-center justify-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
+                  <i data-feather="plus" class="h-6 w-6 text-indigo-600"></i>
+                </div>
+                <h3 class="mt-4 text-lg font-medium text-gray-900">Add New Resume</h3>
+                <p class="mt-2 text-sm text-gray-500 text-center">Upload a new resume to get personalized feedback and job matches.</p>
+                <div class="mt-6">
+                  <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="document.getElementById('resumeFile').click()">
+                    <i data-feather="upload" class="mr-2 h-4 w-4"></i>
+                    Upload Resume
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Matches -->
+        <div class="mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">Recommended Job Matches</h2>
+            <button class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              View All
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Job Card 1 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300 job-card">
+              <div class="p-6">
+                <div class="flex items-start">
+                  <div class="flex-shrink-0">
+                    <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="" />
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900">Senior Software Engineer</h3>
+                    <p class="text-sm text-gray-500">TechCorp Inc.</p>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <div class="flex items-center text-sm text-gray-500">
+                    <i data-feather="map-pin" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                    <span>San Francisco, CA (Remote)</span>
+                  </div>
+                  <div class="mt-2 flex items-center text-sm text-gray-500">
+                    <i data-feather="dollar-sign" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                    <span>$120,000 - $150,000 / year</span>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm font-medium text-indigo-600">92% Match</span>
+                    <span class="text-xs text-gray-500">Posted 2 days ago</span>
+                  </div>
+                  <div class="mt-1 progress-bar">
+                    <div class="progress-fill bg-green-500" style="width: 92%"></div>
+                  </div>
+                </div>
+                <div class="mt-6 flex space-x-3">
+                  <button class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="alert('Application submitted!')">
+                    Apply Now
+                  </button>
+                  <button class="inline-flex justify-center items-center p-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="toggleBookmark(this)">
+                    <i data-feather="bookmark" class="h-4 w-4"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Job Card 2 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300 job-card">
+              <div class="p-6">
+                <div class="flex items-start">
+                  <div class="flex-shrink-0">
+                    <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/45.jpg" alt="" />
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900">Frontend Developer</h3>
+                    <p class="text-sm text-gray-500">WebSolutions LLC</p>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <div class="flex items-center text-sm text-gray-500">
+                    <i data-feather="map-pin" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                    <span>New York, NY (Hybrid)</span>
+                  </div>
+                  <div class="mt-2 flex items-center text-sm text-gray-500">
+                    <i data-feather="dollar-sign" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                    <span>$90,000 - $110,000 / year</span>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm font-medium text-indigo-600">85% Match</span>
+                    <span class="text-xs text-gray-500">Posted 1 week ago</span>
+                  </div>
+                  <div class="mt-1 progress-bar">
+                    <div class="progress-fill bg-green-500" style="width: 85%"></div>
+                  </div>
+                </div>
+                <div class="mt-6 flex space-x-3">
+                  <button class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="alert('Application submitted!')">
+                    Apply Now
+                  </button>
+                  <button class="inline-flex justify-center items-center p-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="toggleBookmark(this)">
+                    <i data-feather="bookmark" class="h-4 w-4"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Job Card 3 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-300 job-card">
+              <div class="p-6">
+                <div class="flex items-start">
+                  <div class="flex-shrink-0">
+                    <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/68.jpg" alt="" />
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900">Product Manager</h3>
+                    <p class="text-sm text-gray-500">InnovateTech</p>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <div class="flex items-center text-sm text-gray-500">
+                    <i data-feather="map-pin" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                    <span>Boston, MA (On-site)</span>
+                  </div>
+                  <div class="mt-2 flex items-center text-sm text-gray-500">
+                    <i data-feather="dollar-sign" class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"></i>
+                    <span>$110,000 - $130,000 / year</span>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm font-medium text-indigo-600">78% Match</span>
+                    <span class="text-xs text-gray-500">Posted 3 days ago</span>
+                  </div>
+                  <div class="mt-1 progress-bar">
+                    <div class="progress-fill bg-yellow-500" style="width: 78%"></div>
+                  </div>
+                </div>
+                <div class="mt-6 flex space-x-3">
+                  <button class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="alert('Application submitted!')">
+                    Apply Now
+                  </button>
+                  <button class="inline-flex justify-center items-center p-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onclick="toggleBookmark(this)">
+                    <i data-feather="bookmark" class="h-4 w-4"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Improve Resume Modal -->
+    <div id="improveModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal('improveModal')">&times;</span>
+        <h3 class="text-lg font-medium text-gray-900 mb-4">AI Suggestions for Your Resume</h3>
+        <div class="space-y-4">
+          <div class="flex items-start">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="flex items-center justify-center h-5 w-5 rounded-full bg-green-100">
+                <i data-feather="check" class="h-3 w-3 text-green-600"></i>
+              </div>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-gray-700">
+                <strong>Add React.js projects:</strong> Include 2-3 projects showcasing your React skills, as this is a key requirement for many frontend positions.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="flex items-center justify-center h-5 w-5 rounded-full bg-green-100">
+                <i data-feather="check" class="h-3 w-3 text-green-600"></i>
+              </div>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-gray-700">
+                <strong>Highlight AWS experience:</strong> Consider getting AWS certification or adding cloud deployment experience to your resume.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="flex items-center justify-center h-5 w-5 rounded-full bg-green-100">
+                <i data-feather="check" class="h-3 w-3 text-green-600"></i>
+              </div>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-gray-700">
+                <strong>Quantify achievements:</strong> Add metrics to your accomplishments (e.g., "Improved application performance by 30%") to make them more impactful.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <button class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            onclick="closeModal('improveModal')">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize AOS & Feather Icons
+      document.addEventListener("DOMContentLoaded", function () {
+        AOS.init({
+          duration: 800,
+          easing: "ease-in-out",
+          once: true,
+        });
+        feather.replace();
+      });
+
+      // Toggle User Menu
+      document.getElementById("user-menu-button").addEventListener("click", function (e) {
+        e.stopPropagation();
+        const menu = document.getElementById("user-menu");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+      });
+
+      // Toggle Sidebar on Mobile
+      document.getElementById("sidebar-toggle").addEventListener("click", function () {
+        const sidebar = document.querySelector(".sidebar");
+        sidebar.classList.toggle("hidden");
+      });
+
+      // File Upload
+      document.getElementById("resumeFile").addEventListener("change", function () {
+        if (this.files.length > 0) {
+          showNotification("Resume uploaded successfully!");
+        }
+      });
+
+      // Modal Functions
+      function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.style.display = "flex";
+          document.body.style.overflow = "hidden";
+        }
+      }
+
+      function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.style.display = "none";
+          document.body.style.overflow = "auto";
+        }
+      }
+
+      function toggleBookmark(button) {
+        const icon = button.querySelector("i");
+        if (icon.getAttribute("data-feather") === "bookmark") {
+          icon.setAttribute("data-feather", "bookmark-fill");
+          icon.setAttribute("class", "h-4 w-4 text-indigo-600");
+        } else {
+          icon.setAttribute("data-feather", "bookmark");
+          icon.setAttribute("class", "h-4 w-4 text-gray-400");
+        }
+        feather.replace();
+      }
+
+      function showNotification(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.style.opacity = "1";
+        setTimeout(() => {
+          toast.style.opacity = "0";
+        }, 3000);
+      }
+
+      // Contact Form Submission (Mock)
+      function submitSupportForm(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const email = formData.get('email');
+        const message = formData.get('message');
+
+        console.log("Support Request:", { email, message });
+        alert("Thank you! Our team will get back to you soon.");
+        closeModal('contactModal');
+        event.target.reset();
+      }
+
+      // 🔔 Notification Bell Dropdown
+      document.getElementById("notification-bell").addEventListener("click", function (e) {
+        e.stopPropagation();
+        const dropdown = document.getElementById("notification-dropdown");
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      });
+
+      // 👤 Profile Dropdown
+      document.getElementById("user-menu-button").addEventListener("click", function (e) {
+        e.stopPropagation();
+        const dropdown = document.getElementById("user-menu");
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      });
+
+      // Close dropdowns when clicking outside
+      document.addEventListener("click", function (e) {
+        const notifDropdown = document.getElementById("notification-dropdown");
+        const userDropdown = document.getElementById("user-menu");
+        const notifBell = document.getElementById("notification-bell");
+        const userButton = document.getElementById("user-menu-button");
+
+        if (!notifBell.contains(e.target) && !notifDropdown.contains(e.target)) {
+          notifDropdown.style.display = "none";
+        }
+        if (!userButton.contains(e.target) && !userDropdown.contains(e.target)) {
+          userDropdown.style.display = "none";
+        }
+      });
+    </script>
+</body>
+</html>
